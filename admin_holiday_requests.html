@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holiday Requests - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status-pending {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .status-approved {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: #c0392b;
+            font-weight: bold;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .approve-btn, .reject-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .approve-btn {
+            background-color: #27ae60;
+            color: white;
+        }
+        .reject-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .approve-btn:hover {
+            background-color: #219a52;
+        }
+        .reject-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Holiday Requests</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Days</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="holidayRequestsTable">
+                <!-- Example row -->
+                <tr>
+                    <td>Hamza</td>
+                    <td>2025-02-15</td>
+                    <td>2025-02-18</td>
+                    <td>4</td>
+                    <td>Family vacation</td>
+                    <td><span class="status-pending">Pending</span></td>
+                    <td class="action-buttons">
+                        <button class="approve-btn" onclick="updateStatus(1, 'approved')">Approve</button>
+                        <button class="reject-btn" onclick="updateStatus(1, 'rejected')">Reject</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function updateStatus(requestId, status) {
+            // Here you would typically update the status in your backend
+            const statusCell = event.target.parentElement.previousElementSibling;
+            if (status === 'approved') {
+                statusCell.innerHTML = '<span class="status-approved">Approved</span>';
+            } else if (status === 'rejected') {
+                statusCell.innerHTML = '<span class="status-rejected">Rejected</span>';
+            }
+            
+            // Hide the action buttons after decision
+            event.target.parentElement.innerHTML = '';
+            
+            // Show confirmation message
+            alert('Holiday request has been ' + status);
+        }
+
+        function sortHolidayRequests() {
+            const table = document.getElementById('holidayRequestsTable');
+            const rows = Array.from(table.getElementsByTagName('tr'));
+
+            // Remove header row
+            const header = rows.shift();
+
+            // Sort rows by start date (second column)
+            rows.sort((a, b) => {
+                const dateA = new Date(a.cells[1].innerText);
+                const dateB = new Date(b.cells[1].innerText);
+                return dateA - dateB;
+            });
+
+            // Clear the table and reinsert sorted rows
+            table.innerHTML = '';
+            table.appendChild(header);
+            rows.forEach(row => table.appendChild(row));
+        }
+
+        // Call sort function on page load
+        window.onload = sortHolidayRequests;
+    </script>
+</body>
+</html>
